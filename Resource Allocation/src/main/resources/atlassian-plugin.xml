@@ -1,0 +1,64 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="i18n/i18n"/>
+
+    <!-- add our web resources -->
+    <web-resource key="resources" name="jira-gadget-tutorial.plugin Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="jquery.ganttView.css" location="/css/jquery.ganttView.css"/>
+        <resource type="download" name="reset.css" location="/css/reset.css"/>
+        <resource type="download" name="jquery-ui-1.8.4.css" location="/css/jquery-ui-1.8.4.css"/>
+
+        <resource type="download" name="jquery-1.4.2.js" location="/js/jquery-1.4.2.js"/>
+        <resource type="download" name="date.js" location="/js/date.js"/>
+        <resource type="download" name="jquery-ui-1.8.4.js" location="/js/jquery-ui-1.8.4.js"/>
+        <resource type="download" name="jquery.ganttView.js" location="/js/jquery.ganttView.js"/>
+        <resource type="download" name="fpt.gantt.treelist.js" location="/js/fpt.gantt.treelist.js"/>
+
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>fsoft-sync-resources</context>
+    </web-resource>
+
+    <webwork1 key="fsoft-project-resource-allocation" name="Resource Allocation" i18n-name-key="fsoft-project-resource-allocation.name">
+        <description key="fsoft-project-resource-allocation.description">Resource Allocation Plugin</description>
+        <actions>
+            <action name="com.atlassian.plugins.tutorial.ResourceAllocationAction" alias="ResourceAllocationAction">
+                <view name="project_resources">/templates/res_alloc/project_resources.vm</view>
+                <view name="user_resources">/templates/res_alloc/user_resources.vm</view>
+            </action>
+        </actions>
+    </webwork1>
+
+    <web-item key="fsoft-navigation-bar-others" section="system.top.navigation.bar">
+        <label>FSOFT Others</label>
+        <link linkId="fsoft-navigation-bar-others"></link>
+    </web-item>
+
+    <web-section key="fsoft-resource-allocation-section" location="fsoft-navigation-bar-others" weight="10">
+        <label>Resource Allocation</label>
+    </web-section>
+
+    <web-item name="Resource Allocation Project" i18n-name-key="fsoft-project-resource-allocation-item.name" key="fsoft-project-resource-allocation-item-project"
+              section="fsoft-navigation-bar-others/fsoft-resource-allocation-section" weight="200" class="com.atlassian.plugins.tutorial.ResourceAllocationAction">
+        <description key="fsoft-project-resource-allocation-item.description">Resource Allocation Plugin</description>
+        <label>Project</label>
+        <link linkId="fsoft-project-resource-allocation-item">/secure/ResourceAllocationAction!getProjectResources.jspa</link>
+    </web-item>
+
+    <web-item name="Resource Allocation Project" i18n-name-key="fsoft-project-resource-allocation-item.name" key="fsoft-project-resource-allocation-item-user"
+              section="fsoft-navigation-bar-others/fsoft-resource-allocation-section" weight="300" class="com.atlassian.plugins.tutorial.ResourceAllocationAction">
+        <description key="fsoft-project-resource-allocation-item.description">Resource Allocation Plugin</description>
+        <label>User</label>
+        <link linkId="fsoft-project-resource-allocation-item">/secure/ResourceAllocationAction!getUserResources.jspa</link>
+    </web-item>
+
+</atlassian-plugin>

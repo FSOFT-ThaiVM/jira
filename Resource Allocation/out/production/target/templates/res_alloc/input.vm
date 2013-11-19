@@ -1,0 +1,19 @@
+<head>
+    <title>Project Resource Allocation</title>
+    <meta name="decorator" content="atl.general" />
+    <script>
+        function loadResourceAllocationAction() {
+            var projectKey = document.getElementById("fsoft-resource-allocation-project-key").value;
+            if (projectKey != "") {
+                window.location.href = "/secure/ResourceAllocationAction!getResources.jspa?projectKey=" + projectKey;
+            }
+        }
+    </script>
+</head>
+<h1>QWERTY</h1>
+<select id="fsoft-resource-allocation-project-key" onchange="loadResourceAllocationAction();">
+    <option value="" selected="selected">-- Select project --</option>
+#foreach($project in $action.projects)
+    <option value="$project.getKey()">$project.getName()</option>
+#end
+</select>

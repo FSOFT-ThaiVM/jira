@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.atlassian.gadgets</groupId>
+        <artifactId>atlassian-gadgets-bundle-base-pom</artifactId>
+        <version>1.1.5.rc1</version>
+    </parent>
+    <artifactId>atlassian-gadgets-api</artifactId>
+    <name>Atlassian Gadgets API</name>
+    <description>Public Atlassian Gadgets API</description>
+    <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>  
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            com.atlassian.gadgets,
+                            com.atlassian.gadgets.dashboard,
+                            com.atlassian.gadgets.dashboard.view,
+                            com.atlassian.gadgets.plugins,
+                            com.atlassian.gadgets.spec,
+                            com.atlassian.gadgets.view
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-one-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.plugins</groupId>
+            <artifactId>atlassian-plugins-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <!--
+          - The JSR-305 and JCIP annotations use the runtime retention policy, so host apps will need them available
+          - on the classpath with this API JAR
+          -->
+        <dependency>
+            <groupId>net.sourceforge.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+        </dependency>
+
+        <!-- Test-only dependencies -->
+        <dependency>
+            <groupId>com.atlassian.bundles</groupId>
+            <artifactId>google-collections</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="__MSG_gadget.Filter.Team.title_"
+                 directory_title="__MSG_gadget.Filter.Team.title__"
+                 description="__MSG_gadget.Filter.Team.description__">
+        <Require feature="dynamic-height"/>
+        <Require feature="oauthpopup"/>
+        <Require feature="setprefs"/>
+        <Require feature="settitle"/>
+        <Require feature="views"/>
+        <Optional feature="atlassian.util"/>
+        <Optional feature="gadget-directory">
+            <Param name="categories">
+                . JIRA
+            </Param>
+        </Optional>
+        #oauth
+        #supportedLocales("gadget.common,gadget.Filter")
+        #supportLocales
+    </ModulePrefs>
+    <UserPref name="isConfigured" datatype="hidden" default_value="false"/>
+    <UserPref name="teamId" datatype="hidden"/>
+    <UserPref name="month" datatype="hidden" />
+    <UserPref name="year" datatype="hidden" />
+    <Content type="html">
+    <![CDATA[
+        #requireResource("com.atlassian.jira.gadgets:common")
+        <!--#requireResource("com.atlassian.jira.gadgets:jira-global")-->
+        #includeResources()
+
+        <style type="text/css">
+            #container {
+                padding: 15px;
+            }
+
+            #no-versions-warning {
+                line-height: 1.4;
+                font-size: 12px;
+            }
+
+            #days-box {
+                text-align: center;
+            }
+
+            #days-value {
+                text-align: center;
+                font-size: 5em;
+            }
+
+            #days-text {
+                padding-bottom: 15px;
+            }
+
+            #version-link {
+                text-align: center;
+            }
+
+            #no-future-versions-warning {
+                padding: 15px;
+            }
+
+            .view {
+                padding: 0.5em 1em;
+            }
+
+            .overdue {
+                color: #cc0000;
+            }
+
+            .future-release {
+                color: #00cc00;
+            }
+
+            .today {
+                color: #cc0000;
+            }
+
+            #days-text .today {
+                font-weight: bold;
+            }
+
+            .icon {
+                padding-top: 3px;
+                padding-right: 3px;
+            }
+
+            .disabled {
+                color: #C0C0C0;
+            }
+        </style>
+
+        <script type="text/javascript" src="__ATLASSIAN_BASE_URL__/download/resources/com.atlassian.plugin.tutorial.fsoft-planned-time:gadgets-planned-time-resources/jscharts.js"></script>
+
+        <script type="text/javascript">
+        (function ()
+        {
+            var gadget = AJS.Gadget({
+                baseUrl: "__ATLASSIAN_BASE_URL__",
+                useOauth: "/rest/gadget/1.0/currentUser",
+                config: {
+                    descriptor: function(args)
+                    {
+                        var gadget = this;
+
+                        gadgets.window.setTitle("__MSG_gadget.Filter.Team.configTitle__");
+
+                        var TeamPicker = function(teamOptions){
+                            var listOption = {
+                                label: "Team",
+                                options:[]
+                            };
+                            var options = new Array();
+                            for(var i=0; i < teamOptions.length; i++){
+                                options[i] = {
+                                    label: teamOptions[i].name,
+                                    value: teamOptions[i].id
+                                };
+                            }
+                            listOption.options = options;
+
+                            var listTeam = {
+                                userpref: "teamId",
+                                label: "Team:",
+                                type: "select",
+                                selected: listOption.options[0].value,
+                                description: "Team to use as the basis for the graph.",
+                                options: listOption.options
+                            };
+                            return listTeam;
+                        };
+
+                        var teamPicker = TeamPicker(args.teamOptions);
+
+                        var MonthPicker = function(){
+                            var monthOption = {
+                                label: "Month",
+                                options:[]
+                            };
+                            var options = new Array();
+                            for(var i=1; i <= 12; i++){
+                                options[i-1] = {
+                                    label: i.toString().length==1 ? ("0" + i):(""+i),
+                                    value: i.toString().length==1 ? ("0" + i):(""+i)
+                                };
+                            }
+                            monthOption.options = options;
+
+                            var listMonth = {
+                                userpref: "month",
+                                label: "Month:",
+                                type: "select",
+                                selected: monthOption.options[0].value,
+                                description: "Select month to use as the basis for the graph.",
+                                options: monthOption.options
+                            };
+                            return listMonth;
+                        };
+
+                        var monthPicker = new MonthPicker();
+
+                        var YearPicker = function(){
+                            var yearOption = {
+                                label: "Year",
+                                options:[]
+                            };
+                            var options = new Array();
+                            var now = new Date();
+                            var year = now.getFullYear();
+                            for(var i=0; i < 10; i++){
+                                options[i] = {
+                                    label: "" + year - i,
+                                    value: "" + year - i
+                                };
+                            }
+                            yearOption.options = options;
+
+                            var listYear = {
+                                userpref: "year",
+                                label: "Year:",
+                                type: "select",
+                                selected: yearOption.options[0].value,
+                                description: "Select year to use as the basis for the graph.",
+                                options: yearOption.options
+                            };
+                            return listYear;
+                        };
+
+                        var yearPicker = new YearPicker();
+                        return {
+                            theme : function()
+                            {
+                                if (gadgets.window.getViewportDimensions().width < 450)
+                                {
+                                    return "gdt top-label";
+                                }
+                                else
+                                {
+                                    return "gdt";
+                                }
+                            }(),
+                            fields: [
+                                teamPicker,
+                                monthPicker,
+                                yearPicker,
+                                //projectPicker,
+                                AJS.gadget.fields.nowConfigured()
+                            ]
+                        };
+                    },
+                    args: function()
+                    {
+                        return [
+                            {
+                                key: "teamOptions",
+                                ajaxOptions: "/rest/rest-fsoft-planned-time/1.0/planned-time/getTeam"
+                            }
+                        ];
+                    }()
+                },
+                view: {
+                    onResizeAdjustHeight: true,
+                    enableReload: true,
+                    template: function (args)
+                    {
+                        console.log(args);
+                        console.log(args.filterTeam);
+                        gadgets.window.setTitle("__MSG_gadget.Filter.Team.title__");
+                        var getContainer = function(){
+                            var container = AJS.$("<div/>").attr('id', 'container').appendTo(gadget.getView().empty());
+                            return function()
+                            {
+                                return container;
+                            }
+                        }();
+                        var showView = function(container){
+                            container.append("<div id ='chartcontainer'/>");
+                            showChart(args);
+
+                        };
+
+                        var showChart = function(args){
+                        	var startTime = new Date(args.filterTeam.begin);
+                            var endTime = new Date(args.filterTeam.end);
+                            var text = startTime.getDate() + "/" + (startTime.getMonth() + 1) + "/" + startTime.getFullYear()
+                                       + " - " + endTime.getDate() + "/" + (endTime.getMonth() + 1) + "/" + endTime.getFullYear();
+                            var sumPlanned = Math.round((parseInt(args.filterTeam.sumPlanned) / parseInt(args.filterTeam.sumRequired)) * 100);
+                            console.log(sumPlanned);
+                            var sumRequired = 100 - sumPlanned;
+                            var myData = new Array(['UnPlanned', sumRequired], ['Planned', sumPlanned]);
+                            var myColors = new Array('#FF5900','#0085A8');
+                            var myChart = new JSChart("chartcontainer", "pie");
+                            myChart.setDataArray(myData);
+                            myChart.set3D(true);
+                            myChart.setLegendShow(true);
+                            myChart.setPieDepth(32);
+                            myChart.setLegendColor("#000");
+                            myChart.setTitle(args.filterTeam.Name + " : " + text);
+                            myChart.setTitlePosition("center");
+                            myChart.setLegend("#FF5900", "Available effort (%)");
+                            myChart.setLegend("#0085A8", "Planned effort (%)");
+                            myChart.setLegendPosition(350, 100);
+                            myChart.setPiePosition(150, 180);
+                            myChart.setSize(500, 350);
+                            myChart.colorizePie(myColors);
+                            myChart.draw();
+                        };
+
+                        var container = getContainer().append("<div id='selection'/>");
+                        showView(container);
+
+                    },
+                    args: [
+                        {
+                            key: "filterTeam",
+                            ajaxOptions: function ()
+                            {
+                                return {
+                                    url: "/rest/rest-fsoft-planned-time/1.0/planned-time/filter-team",
+                                    data:  {
+                                        teamId : gadgets.util.unescapeString(this.getPref("teamId")),
+                                        month : gadgets.util.unescapeString(this.getPref("month")),
+                                        year : gadgets.util.unescapeString(this.getPref("year"))
+                                    }
+                                };
+                            }
+                        }
+                    ]
+
+                }
+            });
+        })();
+        </script>
+  ]]>
+  </Content>
+</Module>

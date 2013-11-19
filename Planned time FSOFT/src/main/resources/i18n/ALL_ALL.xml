@@ -1,0 +1,13 @@
+<messagebundle>
+    <msg name="gadget.Filter.Team.title">Planned time by Team - FSOFT</msg>
+    <msg name="gadget.Filter.Team.description">Display planned time by Team - FSOFT</msg>
+    <msg name="gadget.Filter.Project.title">Planned time by Project - FSOFT</msg>
+    <msg name="gadget.Filter.Project.description">Display planned time by Project - FSOFT</msg>
+    <msg name="gadget.Filter.User.title">Planned time by User - FSOFT</msg>
+    <msg name="gadget.Filter.User.description">Display planned time by User - FSOFT</msg>
+    <msg name="gadget.total.hour.title">Total Hour: {0}</msg>
+    <msg name="gadget.planned.title">Planned time for: {0}</msg>
+    <msg name="gadget.Filter.Team.configTitle">Filter Team</msg>
+    <msg name="gadget.Filter.Project.configTitle">Filter Project</msg>
+    <msg name="gadget.Filter.User.configTitle">Filter User</msg>
+</messagebundle>

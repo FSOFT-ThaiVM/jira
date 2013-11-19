@@ -1,0 +1,272 @@
+$webResourceManager.requireResourcesForContext("fsoft-sync-resources")
+<head>
+    <title>Project Resource Allocation</title>
+    <meta name="decorator" content="atl.general" />
+    <script>
+        function loadResourceAllocationAction() {
+            var projectKey = document.getElementById("fsoft-resource-allocation-project-key").value;
+            if (projectKey != "") {
+                window.location.href = "/secure/ResourceAllocationAction!getResources.jspa?projectKey=" + projectKey;
+            }
+        }
+        /*
+        		var ganttData = [
+			{
+                id: 10001,
+                name: "Fsoft JIRA",
+                user: [
+					{
+                        name:"datlt2",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "Sync Tempo and Project", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "confidential task", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-10 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    },
+                    {
+                        name:"thaivm",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+                            { name: "planned", start: new Date("2013-07-22 00:00:00.0"), end: new Date("2013-07-27 00:00:00.0"), totalHour: 18000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "issue 1", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "issue 2", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-19 18:00:00.0"), totalHour: 70140}
+                                    ,{ name: "issue 3", start: new Date("2013-07-16 14:31:00.0"), end: new Date("2013-07-25 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    },
+                        {
+                        name:"vut5as",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+                            { name: "planned", start: new Date("2013-07-22 00:00:00.0"), end: new Date("2013-07-27 00:00:00.0"), totalHour: 18000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "issue 1", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "issue 2", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-19 18:00:00.0"), totalHour: 70140}
+                                    ,{ name: "issue 3", start: new Date("2013-07-16 14:31:00.0"), end: new Date("2013-07-25 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    }
+				]
+            },
+                        {
+                id: 10002,
+                name: "Fsoft JIRA 1",
+                user: [
+					{
+                        name:"datlt2",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "Sync Tempo and Project", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "confidential task", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-10 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    },
+                    {
+                        name:"thaivm",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+                            { name: "planned", start: new Date("2013-07-22 00:00:00.0"), end: new Date("2013-07-27 00:00:00.0"), totalHour: 18000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "issue 1", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "issue 2", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-19 18:00:00.0"), totalHour: 70140}
+                                    ,{ name: "issue 3", start: new Date("2013-07-16 14:31:00.0"), end: new Date("2013-07-25 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    },
+                        {
+                        name:"vuta",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+                            { name: "planned", start: new Date("2013-07-22 00:00:00.0"), end: new Date("2013-07-27 00:00:00.0"), totalHour: 18000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "issue 1", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "issue 2", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-19 18:00:00.0"), totalHour: 70140}
+                                    ,{ name: "issue 3", start: new Date("2013-07-16 14:31:00.0"), end: new Date("2013-07-25 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    }
+				]
+            },
+
+                         {
+                id: 10002,
+                name: "Fsoft JIRA 2",
+                user: [
+					{
+                        name:"datlt2",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+                                { name: "planned", start: new Date("2013-07-06 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "Sync Tempo and Project", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "confidential task", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-10 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    },
+                    {
+                        name:"thaivm",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "issue 1", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    },
+                        {
+                        name:"vuta",
+                        series: [
+							{ name: "", start: new Date(), end: new Date(), totalHour: 0},
+							{ name: "planned", start: new Date("2013-07-01 00:00:00.0"), end: new Date("2013-07-24 00:00:00.0"), totalHour: 3600},
+							{ name: "planned", start: new Date("2013-07-09 00:00:00.0"), end: new Date("2013-07-10 00:00:00.0"), totalHour: 9000},
+                            { name: "planned", start: new Date("2013-07-22 00:00:00.0"), end: new Date("2013-07-27 00:00:00.0"), totalHour: 18000},
+							{
+								name: "Project Usage",
+								issues: [
+									{ name: "", start: new Date(), end: new Date(), totalHour: 0}
+									,{ name: "issue 1", start: new Date("2013-07-16 09:00:00.0"), end: new Date("2013-07-19 23:59:59.0"), totalHour: 115200}
+									,{ name: "issue 2", start: new Date("2013-07-08 14:31:00.0"), end: new Date("2013-07-19 18:00:00.0"), totalHour: 70140}
+								],
+								start: new Date(),
+								end: new Date(),
+								totalHour: 0
+							}
+                        ]
+                    }
+				]
+            }
+		];
+
+        */
+        var ganttData = [
+        #foreach($resourceAllocation in $action.resourceAllocations)
+            {
+                id: $!resourceAllocation.project.id,
+                name: "$!resourceAllocation.project.name",
+                user: [
+                    #foreach($user in $resourceAllocation.userResourceAllocations)
+                    {
+                        name:"$!user.username",
+                        series: [
+                        { name: "", start: new Date(), end: new Date(), totalHour: 0},
+                        #foreach($plan in $user.plans)
+                            { name: "Planned", start: new Date("$!plan.fromDate"), end: new Date("$!plan.toDate"), totalHour: $!plan.secondsPerDay},
+                        #end
+                        {
+                            name: "Project Usage",
+                            issues: [
+                                { name: "", start: new Date(), end: new Date(), totalHour: 0}
+                                #foreach($issue in $user.issues)
+                                    ,{ name: "$!issue.name", start: new Date("$!issue.plannedStart"), end: new Date("$!issue.plannedEnd"), totalHour: $!issue.estimate}
+                                #end
+                            ],
+                            start: new Date(),
+                            end: new Date(),
+                            totalHour: 0
+                        }
+                        ]
+                    }
+                        #if( $velocityHasNext ), #end
+                    #end
+                ]
+            }
+            #if( $velocityHasNext ), #end
+        #end
+        ];
+
+        $(function () {
+			$("#ganttChart").ganttView({
+				data: ganttData,
+				slideWidth: 850,
+				behavior: {
+					onClick: function (data) {
+						//TODO
+					},
+					onResize: function (data) {
+    					//TODO
+					},
+					onDrag: function (data) {
+                        //TODO
+					}
+				}
+			});
+            $("div[id^=fpt-gantt_p]").treeList();
+		});
+
+    </script>
+</head>
+
+<div id="ganttChart" style="padding-left: 60px;padding-top: 100px;-webkit-user-select: none;"></div>

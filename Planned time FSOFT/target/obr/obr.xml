@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<repository lastmodified="20130705101823.601" name="MyRepository">
+<resource id="Untitled-892429457/0.0.0" presentationname="Unnamed - doesntmatter:doesntmatter:jar:doesntmatter" symbolicname="Untitled-892429457" uri="/D:/Plugin%20Jira%20Fsoft/Planned%20time%20FSOFT/target/fsoft-planned-time-2.0.jar" version="0.0.0">
+<description/>
+<size>154165</size>
+<category id="doesntmatter"/>
+<capability name="bundle">
+<p n="manifestversion" v="2"/>
+<p n="presentationname" v="Unnamed - doesntmatter:doesntmatter:jar:doesntmatter"/>
+<p n="symbolicname" v="Untitled-892429457"/>
+<p n="version" t="version" v="0.0.0"/>
+</capability>
+</resource>
+</repository>

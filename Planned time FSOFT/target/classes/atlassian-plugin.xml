@@ -1,0 +1,20 @@
+<atlassian-plugin key="com.atlassian.plugin.tutorial.fsoft-planned-time" name="fsoft-planned-time" plugins-version="2">
+    <plugin-info>
+        <description>This is the Planned Time of Fsoft.</description>
+        <version>2.0</version>
+        <vendor name="FPT Software Ltd." url="http://fpt.com.vn/" />
+
+    </plugin-info>
+    <gadget key="team" location="FilterTeam.xml"/>
+
+    <resource type="i18n" location="i18n/i18n" name="i18n" />
+
+    <rest key="fsoft-planned-time-rest-resources" path="/rest-fsoft-planned-time" version="1.0">
+        <description>Provides the REST resource for the project list.</description>
+
+    </rest>
+    <web-resource key="gadgets-planned-time-resources" name="gadgets-planned-time Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="jscharts.js" location="/js/jscharts.js"/>
+  </web-resource>
+</atlassian-plugin>

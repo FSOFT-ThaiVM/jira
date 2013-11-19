@@ -1,0 +1,181 @@
+$webResourceManager.requireResourcesForContext("fsoft-sync-resources")
+<head>
+    <title>Project Resource Allocation</title>
+    <meta name="decorator" content="atl.general" />
+    <script>
+        function loadResourceAllocationAction() {
+            var projectKey = document.getElementById("fsoft-resource-allocation-project-key").value;
+            if (projectKey != "") {
+                window.location.href = "/secure/ResourceAllocationAction!getResources.jspa?projectKey=" + projectKey;
+            }
+        }
+
+        function containsObj(arr, obj) {
+            var has = false;
+            for (var i = 0; i < arr.length; i++) { if (arr[i] == obj) { has = true; } }
+            return has;
+        }
+
+        var createDate = function(dateStr) {
+            var date = new Date();
+            date.setMilliseconds(0);
+
+            var a = dateStr.split(" ");
+            var d = a[0].split("-");
+            var t = null;
+
+            if (a.length > 1 && a[1].indexOf(":") != -1) {
+                t = a[1].split(":");
+            }
+            else {
+                // log('Make time with hour -> no hour');
+            }
+
+            if (t != null) {
+                date.setSeconds(t[2]);
+                date.setMinutes(t[1]);
+                date.setHours(t[0]);
+            }
+            else {
+                date.setSeconds(0);
+                date.setMinutes(0);
+                date.setHours(0);
+            }
+            date.setDate(1);
+            date.setFullYear(d[0]);
+            date.setMonth(d[1] - 1);
+            date.setDate(d[2]);
+
+            return date;
+        };
+
+        var ganttData = [
+        #foreach($userResourceAllocation in $action.userResourceAllocations)
+            {
+                id: 1,
+                type: "user",
+                name: "$!userResourceAllocation.username",
+                user: [
+                    {name:"Total Planned", series: [{ name: "", start: new Date(), end: new Date(), totalHour: 0}]},
+                    {name:"Total Usage", series: [{ name: "", start: new Date(), end: new Date(), totalHour: 0}]},
+                    #foreach($projectUserResourceAllocation in $userResourceAllocation.projectUserResourceAllocations)
+                    {
+                        name:"$!projectUserResourceAllocation.project.getName()",
+                        series: [
+                        { name: "", start: new Date(), end: new Date(), totalHour: 0},
+                        #foreach($plan in $projectUserResourceAllocation.plans)
+                            { name: "Planned", start: createDate("$!plan.fromDate"), end: createDate("$!plan.toDate"), totalHour: $!plan.secondsPerDay},
+                        #end
+                        {
+                            name: "Project Usage",
+                            issues: [
+                                { name: "", start: new Date(), end: new Date(), totalHour: 0}
+                                #foreach($issue in $projectUserResourceAllocation.issues)
+                                    #if("$!issue.plannedStart" != "" && "$!issue.plannedEnd" != "")
+                                        ,{ key: "$!issue.key", name: "$!issue.name", start: createDate("$!issue.plannedStart"), end: createDate("$!issue.plannedEnd"), totalHour: $!issue.timeOriginalEstimate}
+                                    #end
+                                #end
+                            ],
+                            start: new Date(),
+                            end: new Date(),
+                            totalHour: 0
+                        }
+                        ]
+                    }
+                        #if( $velocityHasNext ), #end
+                    #end
+                ]
+            }
+            #if( $velocityHasNext ), #end
+        #end
+        ];
+
+        $(function () {
+			$("#ganttChart").ganttView({
+				data: ganttData,
+				slideWidth: 850,
+				behavior: {
+					onClick: function (data) {
+						//TODO
+					},
+					onResize: function (data) {
+    					//TODO
+					},
+					onDrag: function (data) {
+                        //TODO
+					}
+				}
+			});
+            $("div[id^=fpt-gantt_p]").treeList();
+
+
+		});
+
+        var listUser = [
+            #foreach($userResourceAllocation in $action.userResourceAllocations)
+                "$!userResourceAllocation.username"
+                #if( $velocityHasNext ), #end
+            #end
+        ];
+
+        var currentHidden = [];
+
+        function FilterByTeamMember() {
+            var teamName = jQuery("#fsoft-team-id").val();
+            var users = [];
+            var usersHidden = [];
+            #foreach($teamResourceAllocation in $action.teamResourceAllocations)
+                if("$!teamResourceAllocation.name" == teamName) {
+                    #foreach($user in $teamResourceAllocation.users)
+                        users[users.length] = "$!user.userName";
+                    #end
+                }
+            #end
+            console.log("users : " + users);
+            if(users.length == 0) {
+
+            } else {
+                for(var i = 0; i < listUser.length; i++) {
+                    if(!containsObj(users, listUser[i])) {
+                        usersHidden[usersHidden.length] = listUser[i];
+                    }
+                }
+            }
+            console.log("user hidden : " + usersHidden);
+            var divUsers = jQuery("div[id^=fpt-gantt_p-]");
+
+            for(var i = 0; i < divUsers.length; i++) {
+                if(containsObj(usersHidden, divUsers[i].innerHTML)) {
+                    console.log("user " + divUsers[i].innerHTML);
+                    console.log(i);
+                    jQuery("#fpt-gantt_p-" + i).toggle();
+                    jQuery("#fpt-gantt_root_u_p-" + i).toggle();
+                    jQuery("#fpt-gantt_root_rp-" + i).toggle();
+                    jQuery("#fpt-gantt_root_bp-" + i).toggle();
+                } else {
+                    if(document.getElementById("fpt-gantt_p-" + i) != null && document.getElementById("fpt-gantt_p-" + i).style.display == "none") {
+                        jQuery("#fpt-gantt_p-" + i).toggle();
+                        jQuery("#fpt-gantt_root_u_p-" + i).toggle();
+                        jQuery("#fpt-gantt_root_rp-" + i).toggle();
+                        jQuery("#fpt-gantt_root_bp-" + i).toggle();
+                    }
+                }
+            }
+        }
+
+
+    </script>
+</head>
+<div style="padding-left: 60px;padding-top: 80px;-webkit-user-select: none;">
+    <form action="">
+        <div style="float: left;padding-top: 3px;">Select Team Of Tempo</div>
+        <select id="fsoft-team-id" style="margin-left: 15px;">
+            <option value="all">--ALL--</option>
+            #foreach($teamResourceAllocation in $action.teamResourceAllocations)
+                <option value="$teamResourceAllocation.name">$teamResourceAllocation.name</option>
+            #end
+        </select>
+        <input type="button" value="Filter" onclick="FilterByTeamMember()"/>
+    </form>
+</div>
+<div id="ganttChart" style="padding-left: 60px;padding-top: 10px;-webkit-user-select: none;"></div>

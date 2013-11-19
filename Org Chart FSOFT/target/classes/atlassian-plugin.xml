@@ -1,0 +1,45 @@
+<atlassian-plugin key="com.atlassian.plugins.tutorial.fsoft-org-chart" name="Org. Chart Plugin" plugins-version="2">
+    <plugin-info>
+        <description>This is the Org. Chart plugin.</description>
+        <version>2.0</version>
+        <vendor name="FPT Software Ltd." url="http://fpt.com.vn/"/>
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="i18n/i18n"/>
+
+    <!-- add our rest resource -->
+    <rest key="tutorial-gadget-rest-resources" path="/sync-role-fsoft" version="1.0">
+        <description>Provides the REST resource for the project list.</description>
+    </rest>
+
+    <!-- add our web resources -->
+    <web-resource key="resources" name="jira-gadget-tutorial.plugin Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="fsoft-style.css"
+                  location="/css/fsoft-style.css"/>
+        <resource type="download" name="fsoft-script.js" location="/js/fsoft-script.js"/>
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>fsoft-sync-resources</context>
+    </web-resource>
+
+    <webwork1 key="fsoft-sync-tempo-project" name="Sync Tempo Project" i18n-name-key="fsoft-sync-tempo-project.name">
+        <description key="fsoft-sync-tempo-project.description">Sync Tempo Project Plugin</description>
+        <actions>
+            <action name="com.atlassian.plugins.tutorial.SyncTempoProjectAction" alias="SyncTempoProjectAction">
+                <view name="success">/templates/success.vm</view>
+            </action>
+        </actions>
+    </webwork1>
+
+    <web-item name="Sync Tempo Project" i18n-name-key="fsoft-sync-tempo-project-item.name" key="fsoft-sync-tempo-project-item"
+              section="atl.jira.proj.config/projectgroup4" weight="100" class="com.atlassian.plugins.tutorial.SyncTempoProjectAction">
+        <description key="fsoft-sync-tempo-project-item.description">Sync Tempo Project Plugin</description>
+        <label key="fsoft-sync-tempo-project-item.label"></label>
+        <link linkId="fsoft-sync-tempo-project-item">/secure/SyncTempoProjectAction!default.jspa?projectKey=$projectKeyEncoded</link>
+    </web-item>
+
+</atlassian-plugin>

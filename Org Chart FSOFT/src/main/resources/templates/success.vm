@@ -1,0 +1,291 @@
+$webResourceManager.requireResourcesForContext("fsoft-sync-resources")
+<html>
+    <head>
+        <title>FSOFT Organization Chart</title>
+        <meta name="decorator" content="atl.admin" />
+        <meta content="atl.jira.proj.config/projectgroup4" name="admin.active.section">
+        <meta content="fsoft-sync-tempo-project-item" name="admin.active.tab">
+        <meta name="projectKey" content="$textutils.htmlEncode($action.projectKey)"/>
+
+
+    <head>
+
+        <title>Test User Update</title>
+
+        <meta name="decorator" content="admin"/>
+
+        <meta content="atl.jira.proj.config" name="admin.active.section">
+
+        <meta content="Project_KPI_Update_Admin" name="admin.active.tab">
+
+        <meta name="projectKey" content="FMSTWIN"/>
+
+        <meta name="projectId" content="10000"/>
+
+    </head>
+
+
+    <script>
+            jQuery.extend({
+                compare: function (arrayA, arrayB) {
+                    if (arrayA.length != arrayB.length) { return false; }
+                    // sort modifies original array
+                    // (which are passed by reference to our method!)
+                    // so clone the arrays before sorting
+                    var a = jQuery.extend(true, [], arrayA);
+                    var b = jQuery.extend(true, [], arrayB);
+                    a.sort();
+                    b.sort();
+                    for (var i = 0, l = a.length; i < l; i++) {
+                        if (a[i] !== b[i]) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            });
+
+            Array.prototype.contains = function ( needle ) {
+               for (i in this) {
+                   if (this[i] == needle) return true;
+               }
+               return false;
+            }
+
+            var defaultData = [
+                #foreach($roleOfUser in $action.listRoleOfUser)
+                    {
+                        user: "$!roleOfUser.userName",
+                        roles :[
+                            #foreach($role in $roleOfUser.roles)
+                                "$!role"
+                                #if( $velocityHasNext ), #end
+                            #end
+                        ]
+                    }
+                    #if( $velocityHasNext ), #end
+                #end
+            ];
+
+            console.log(defaultData);
+            /*
+            syncAll = function(){
+                var numberOfListUserTagName = document.getElementsByClassName("fsoft-user-name").length;
+
+                for(var i = 0; i < numberOfListUserTagName; i++){
+
+                    var userName = document.getElementsByClassName("fsoft-user-name")[i].innerHTML.trim();
+                    console.log(userName);
+                    addRole(userName,true);
+                }
+            };
+            */
+
+            syncAll = function() {
+                var editData = [];
+                var numberOfListUserTagName = document.getElementsByClassName("fsoft-user-name").length;
+
+                for(var i = 0; i < numberOfListUserTagName; i++) {
+                    var userName = document.getElementsByClassName("fsoft-user-name")[i].innerHTML.trim();
+                    var numberOfTagName = document.getElementsByClassName(userName).length;
+                    var roles = [];
+                    for (var j = 0; j < numberOfTagName; j++) {
+                        if(document.getElementsByClassName(userName)[j].checked){
+                            roles[roles.length] = document.getElementsByClassName(userName)[j].value;
+                        }
+                    }
+                    editData[editData.length] = {
+                        user: userName,
+                        roles: roles
+                    };
+                }
+
+                var compareData = [];
+                for(var i = 0; i < defaultData.length; i++) {
+                    var default_ = defaultData[i];
+                    var edit = editData[i];
+
+                    if(!jQuery.compare(default_.roles, edit.roles)) {
+                        var removeRole = [];
+                        for(var j = 0; j < default_.roles.length; j++) {
+                            if(!edit.roles.contains(default_.roles[j])) {
+                                removeRole[removeRole.length] = default_.roles[j];
+                            }
+                        }
+
+                        var addRole = [];
+                        for(var j = 0; j < edit.roles.length; j++) {
+                            if(!default_.roles.contains(edit.roles[j])) {
+                                addRole[addRole.length] = edit.roles[j];
+                            }
+                        }
+
+                        compareData[compareData.length] = {
+                            userName: default_.user,
+                            addRoles: addRole,
+                            removeRoles: removeRole
+                        };
+                    }
+                }
+
+                console.log(compareData);
+
+                var xmlhttp;
+                if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp=new XMLHttpRequest();
+                } else {// code for IE6, IE5
+                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xmlhttp.onreadystatechange=function(){
+                    if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                        console.log("0success");
+                        document.getElementById("fsoft-sync-done").innerHTML = "<span style='color:blue'>Sync All done!</span>";
+                        // TODO
+                        for (var i = 0; i < defaultData.length; i++) {
+                            for(var j = 0; j < compareData.length; j++) {
+                                if(defaultData[i].user == compareData[j].userName) {
+                                    var newRoles = [];
+                                    for(var k = 0; k < defaultData[i].roles.length; k++) {
+                                        if(!compareData[j].removeRoles.contains(defaultData[i].roles[k])) {
+                                            newRoles[newRoles.length] = defaultData[i].roles[k];
+                                        }
+                                    }
+
+                                    for(var k = 0; k < compareData[j].addRoles.length; k++) {
+                                        newRoles[newRoles.length] = compareData[j].addRoles[k];
+                                    }
+                                    defaultData[i].roles = newRoles;
+                                }
+                            }
+                        }
+                        console.log(defaultData);
+                    } else if (xmlhttp.readyState==4 && xmlhttp.status == 401){
+                        window.location.href = "/login.jsp?permissionViolation=true&os_destination=" + window.location.pathname + window.location.search;
+                    } else {
+
+                    }
+                }
+
+                var url = "/rest/sync-role-fsoft/1.0/fsoft-sync-roles-service/syncRole?projectId=$action.project.id";
+                xmlhttp.open("POST",url,true);
+                xmlhttp.setRequestHeader("Content-type","application/json");
+
+                var param = compareData;
+
+                xmlhttp.send(JSON.stringify(param));
+
+            }
+
+            addRole = function(user,isSyncAll){
+                var numberOfTagName = document.getElementsByClassName(user).length;
+                var roles = [];
+
+                for (var i = 0; i < numberOfTagName; i++){
+                    if(document.getElementsByClassName(user)[i].checked){
+                        roles[roles.length] = document.getElementsByClassName(user)[i].value;
+                    }
+                }
+
+                var xmlhttp;
+                if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp=new XMLHttpRequest();
+                } else {// code for IE6, IE5
+                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xmlhttp.onreadystatechange=function(){
+                    if (xmlhttp.readyState==4 && xmlhttp.status==200){
+                        console.log("0success");
+                        if(isSyncAll){
+                            document.getElementById("fsoft-sync-done").innerHTML = "<span style='color:blue'>Sync All done!</span>";
+                        } else {
+                            document.getElementById("fsoft-sync-done").innerHTML = "<span style='color:blue'>Sync " + user + " done!</span>";
+                        }
+
+                        for (var i = 0; i < defaultData.length; i++) {
+                            if(defaultData[i].user == user) {
+                                defaultData[i].roles = roles;
+                                break;
+                            }
+                        }
+
+                        console.log(defaultData);
+                    } else if (xmlhttp.readyState==4 && xmlhttp.status == 401){
+                        window.location.href = "/login.jsp?permissionViolation=true&os_destination=" + window.location.pathname + window.location.search;
+                    } else {
+
+                    }
+                }
+
+                var url = "/rest/sync-role-fsoft/1.0/fsoft-sync-roles-service/addRole?projectId=$action.project.id";
+                xmlhttp.open("POST",url,true);
+                xmlhttp.setRequestHeader("Content-type","application/json");
+
+                var param = {
+                    userName: user,
+                    roles: roles
+                }
+                console.log(param);
+                xmlhttp.send(JSON.stringify(param));
+            };
+            onChangeValue = function(){
+                document.getElementById("fsoft-sync-done").innerHTML = "&nbsp;";
+            };
+            checkAll = function(role){
+                var checkBoxs = document.getElementsByClassName(role);
+                if(checkBoxs[0].checked==true){
+                    jQuery("."+role).prop('checked', false);
+                } else {
+                    jQuery("."+role).prop('checked', true);
+                }
+            }
+        </script>
+
+    </head>
+
+    <body class="fsoft-rule">
+        <h1>FSOFT Organization Chart</h1>
+        <p>All members which are assigned in TEMPO are listed below.</p>
+        <p>TEMPO members still cannot access to project until they are registered in Project Roles.</p>
+        <p>Please select Roles then press 'Sync' to register Project Roles</p>
+        <br><br>
+        <form action="">
+            <table id="fsoft-user-roles" class="fsoft-table-style">
+                <tr class="fsoft-table-header">
+                    <th class="fsoft-th-td-style">
+                        User Name
+                    </th>
+                    #foreach($roleOfProject in $action.getProjectRoles())
+                    <th class="fsoft-th-td-style fsoft-roles-header" onclick="checkAll('$roleOfProject.name');">
+                        $roleOfProject.name
+                    </th>
+                    #end
+                    <th class="fsoft-th-td-style">
+
+                    </th>
+                </tr>
+                #foreach($roleOfUser in $action.listRoleOfUser)
+                <tr class="fsoft-tr-style">
+                    <td class="fsoft-th-td-style fsoft-user-name">
+                        $roleOfUser.userName
+                    </td >
+                    #foreach($roleOfProject in $action.getProjectRoles())
+                    <td class="fsoft-th-td-style">
+                        <input class="$roleOfUser.userName $roleOfProject.name" value="$roleOfProject.name" type="checkbox" #if($roleOfUser.roles.contains($roleOfProject.name)) checked #end onchange="onChangeValue();">
+                    </td>
+                    #end
+                    <td class="fsoft-th-td-style">
+                        <input type="button" value="Sync this member" onclick="addRole('$roleOfUser.userName');">
+                    </td>
+                </tr>
+
+                #end
+            </table>
+            <input type="button" value="Sync all members" id="syncbutton" onclick="syncAll();" style="margin-top: 10px">
+            <input type="reset" value="Reset">
+        </form>
+
+        <div id="fsoft-sync-done"> </div>
+    </body>
+</html>
